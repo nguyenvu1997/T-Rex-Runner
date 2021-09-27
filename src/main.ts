@@ -93,6 +93,10 @@ class Player {
 
 }
 
+class Castus{
+    
+}
+
 class Score {
     text: string;
     x: number;
