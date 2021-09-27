@@ -6,6 +6,9 @@ let gravity: number;
 let keys = {};
 let scoreText: any;
 let score: number;
+let castus: any;
+let cloud: any;
+let bird: any;
 
 
 document.addEventListener('keydown', function (evt) {
@@ -19,7 +22,6 @@ let sprite = new Image();
 sprite.src = './img/200-offline-sprite.png';
 
 class Player {
-    t_rex = new Image();
     sx: number;
     sy: number;
     sw: number;
@@ -90,11 +92,93 @@ class Player {
 
         this.Draw();
     }
-
 }
 
-class Castus{
-    
+class Cloud {
+    sx: number;
+    sy: number;
+    sw: number;
+    sh: number;
+    x: number;
+    y: number;
+    w: number;
+    h: number;
+    dy: number;
+
+    constructor() {
+        this.sx = 175;
+        this.sy = 0;
+        this.sw = 85;
+        this.sh = 100;
+        this.x = 330;
+        this.y = canvas.height - this.sh - 50;
+        this.w = 85;
+        this.h = 100;
+    }
+
+    Draw(){
+        ctx.beginPath();
+        ctx.drawImage(sprite, this.sx, this.sy, this.sw, this.sh, this.x, this.y, this.w, this.h);
+        ctx.closePath();
+    }
+}
+
+class Bird {
+    sx: number;
+    sy: number;
+    sw: number;
+    sh: number;
+    x: number;
+    y: number;
+    w: number;
+    h: number;
+    dy: number;
+
+    constructor() {
+        this.sx = 260;
+        this.sy = 0;
+        this.sw = 90;
+        this.sh = 100;
+        this.x = 500;
+        this.y = canvas.height - this.sh;
+        this.w = 90;
+        this.h = 100;
+    }
+
+    Draw(){
+        ctx.beginPath();
+        ctx.drawImage(sprite, this.sx, this.sy, this.sw, this.sh, this.x, this.y, this.w, this.h);
+        ctx.closePath();
+    }
+}
+
+class Castus {
+    sx: number;
+    sy: number;
+    sw: number;
+    sh: number;
+    x: number;
+    y: number;
+    w: number;
+    h: number;
+    dy: number;
+
+    constructor() {
+        this.sx = 850;
+        this.sy = 0;
+        this.sw = 53;
+        this.sh = 100;
+        this.x = 800;
+        this.y = canvas.height - this.sh - 6;
+        this.w = 52;
+        this.h = 100;
+    }
+
+    Draw(){
+        ctx.beginPath();
+        ctx.drawImage(sprite, this.sx, this.sy, this.sw, this.sh, this.x, this.y, this.w, this.h);
+        ctx.closePath();
+    }
 }
 
 class Score {
@@ -132,6 +216,11 @@ function Update() {
     scoreText.text = "Score: " + score;
     scoreText.Draw();
 
+    castus.Draw();
+    cloud.Draw();
+    bird.Draw();
+
+    // Draw ground
     ctx.drawImage(sprite, 0, 100, sprite.width, sprite.height, 0, canvas.height - 32, sprite.width, sprite.height);
 
     requestAnimationFrame(Update);
@@ -141,6 +230,9 @@ function Start() {
     gravity = 1
     score = 0;
     player = new Player();
+    castus = new Castus();
+    cloud = new Cloud();
+    bird = new Bird();
     scoreText = new Score("Score: " + score, 25, 25, "left", "black", "20");
     requestAnimationFrame(Update);
 }
