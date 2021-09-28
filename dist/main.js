@@ -16,6 +16,7 @@ let initialSpawnTimer = 200;
 let spawnTimer = initialSpawnTimer;
 let sprite = new Image();
 sprite.src = './img/200-offline-sprite.png';
+console.log(sprite);
 function RandomIntInRange(min, max) {
     return Math.round(Math.random() * (max - min) + min);
 }
@@ -24,7 +25,7 @@ function SpawnCloud() {
     clouds.push(cloud);
 }
 function SpawnObstacle() {
-    let type = RandomIntInRange(0, 1);
+    let type = RandomIntInRange(0, 2);
     castus = new Castus();
     bird = new Bird();
     if (type == 1) {
@@ -47,7 +48,9 @@ function update() {
     spawnTimer--;
     if (spawnTimer <= 0) {
         SpawnCloud();
+        SpawnObstacle();
         console.log(clouds);
+        console.log(obstacles);
         spawnTimer = initialSpawnTimer - 12;
         if (spawnTimer < 60) {
             spawnTimer = 60;
@@ -56,6 +59,16 @@ function update() {
     for (let i = 0; i < clouds.length; i++) {
         let c = clouds[i];
         c.update();
+    }
+    for (let i = 0; i < obstacles.length; i++) {
+        let o = obstacles[i];
+        if (player.x < o.x + o.w && player.x + player.w > o.x &&
+            player.y < o.y + o.h && player.y + player.h > o.y) {
+            obstacles = [];
+            score = 0;
+            spawnTimer = initialSpawnTimer;
+        }
+        o.update();
     }
     requestAnimationFrame(update);
 }
