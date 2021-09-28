@@ -1,3 +1,5 @@
+import { Player, Castus, Cloud, Bird, Score } from "./objects/export.js";
+import { handleInput } from "./ux/export.js";
 const canvas = document.querySelector('#t-rex-runner');
 const ctx = canvas.getContext('2d');
 let player;
@@ -7,159 +9,62 @@ let scoreText;
 let score;
 let castus;
 let cloud;
+let clouds = [];
 let bird;
-document.addEventListener('keydown', function (evt) {
-    keys[evt.code] = true;
-});
-document.addEventListener('keyup', function (evt) {
-    keys[evt.code] = false;
-});
+let obstacles = [];
+let initialSpawnTimer = 200;
+let spawnTimer = initialSpawnTimer;
 let sprite = new Image();
 sprite.src = './img/200-offline-sprite.png';
-class Player {
-    constructor() {
-        this.sx = 75;
-        this.sy = 0;
-        this.sw = 85;
-        this.sh = 100;
-        this.x = 30;
-        this.y = canvas.height - this.sh;
-        this.w = 85;
-        this.h = 100;
-        this.dy = 0;
-        this.jumpDistance = 15;
-        this.grounded = false;
-        this.jumpTimer = 0;
+function RandomIntInRange(min, max) {
+    return Math.round(Math.random() * (max - min) + min);
+}
+function SpawnCloud() {
+    cloud = new Cloud();
+    clouds.push(cloud);
+}
+function SpawnObstacle() {
+    let type = RandomIntInRange(0, 1);
+    castus = new Castus();
+    bird = new Bird();
+    if (type == 1) {
+        obstacles.push(castus);
     }
-    Draw() {
-        ctx.beginPath();
-        ctx.drawImage(sprite, this.sx, this.sy, this.sw, this.sh, this.x, this.y, this.w, this.h);
-        ctx.closePath();
-    }
-    Jump() {
-        ctx.clearRect(this.x, this.y, this.w, this.h);
-        if (this.grounded && this.jumpTimer == 0) {
-            this.jumpTimer = 1;
-            this.dy = -this.jumpDistance;
-        }
-        else if (this.jumpTimer > 0 && this.jumpTimer < 15) {
-            this.jumpTimer++;
-            this.dy = -this.jumpDistance - (this.jumpTimer / 50);
-        }
-    }
-    Animate() {
-        // Jump
-        ctx.clearRect(this.x, this.y, this.w, this.h);
-        if (keys['Space'] || keys['KeyW']) {
-            this.Jump();
-        }
-        else {
-            this.jumpTimer = 0;
-        }
-        this.y += this.dy;
-        // Gravity
-        if (this.y + this.h < canvas.height) {
-            this.dy += gravity;
-            this.grounded = false;
-        }
-        else {
-            this.dy = 0;
-            this.grounded = true;
-            this.y = canvas.height - this.h;
-        }
-        this.Draw();
+    else {
+        obstacles.push(bird);
     }
 }
-class Cloud {
-    constructor() {
-        this.sx = 175;
-        this.sy = 0;
-        this.sw = 85;
-        this.sh = 100;
-        this.x = 330;
-        this.y = canvas.height - this.sh - 50;
-        this.w = 85;
-        this.h = 100;
-    }
-    Draw() {
-        ctx.beginPath();
-        ctx.drawImage(sprite, this.sx, this.sy, this.sw, this.sh, this.x, this.y, this.w, this.h);
-        ctx.closePath();
-    }
-}
-class Bird {
-    constructor() {
-        this.sx = 260;
-        this.sy = 0;
-        this.sw = 90;
-        this.sh = 100;
-        this.x = 500;
-        this.y = canvas.height - this.sh;
-        this.w = 90;
-        this.h = 100;
-    }
-    Draw() {
-        ctx.beginPath();
-        ctx.drawImage(sprite, this.sx, this.sy, this.sw, this.sh, this.x, this.y, this.w, this.h);
-        ctx.closePath();
-    }
-}
-class Castus {
-    constructor() {
-        this.sx = 850;
-        this.sy = 0;
-        this.sw = 53;
-        this.sh = 100;
-        this.x = 800;
-        this.y = canvas.height - this.sh - 6;
-        this.w = 52;
-        this.h = 100;
-    }
-    Draw() {
-        ctx.beginPath();
-        ctx.drawImage(sprite, this.sx, this.sy, this.sw, this.sh, this.x, this.y, this.w, this.h);
-        ctx.closePath();
-    }
-}
-class Score {
-    constructor(text, x, y, align, color, size) {
-        this.text = text;
-        this.x = x;
-        this.y = y;
-        this.align = align;
-        this.color = color;
-        this.size = size;
-    }
-    Draw() {
-        ctx.beginPath();
-        ctx.fillStyle = this.color;
-        ctx.font = this.size + "px sans-serif";
-        ctx.textAlign = this.align;
-        ctx.fillText(this.text, this.x, this.y);
-        ctx.closePath();
-    }
-}
-function Update() {
+handleInput();
+function update() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    player.Animate();
+    player.update();
     score++;
     scoreText.text = "Score: " + score;
-    scoreText.Draw();
-    castus.Draw();
-    cloud.Draw();
-    bird.Draw();
+    scoreText.draw();
     // Draw ground
     ctx.drawImage(sprite, 0, 100, sprite.width, sprite.height, 0, canvas.height - 32, sprite.width, sprite.height);
-    requestAnimationFrame(Update);
+    // Spawn Cloud
+    spawnTimer--;
+    if (spawnTimer <= 0) {
+        SpawnCloud();
+        console.log(clouds);
+        spawnTimer = initialSpawnTimer - 12;
+        if (spawnTimer < 60) {
+            spawnTimer = 60;
+        }
+    }
+    for (let i = 0; i < clouds.length; i++) {
+        let c = clouds[i];
+        c.update();
+    }
+    requestAnimationFrame(update);
 }
-function Start() {
+function start() {
     gravity = 1;
     score = 0;
     player = new Player();
-    castus = new Castus();
-    cloud = new Cloud();
-    bird = new Bird();
     scoreText = new Score("Score: " + score, 25, 25, "left", "black", "20");
-    requestAnimationFrame(Update);
+    requestAnimationFrame(update);
 }
-Start();
+start();
+export { canvas, ctx, sprite, gravity, keys, cloud, clouds };
