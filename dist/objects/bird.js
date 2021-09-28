@@ -3,6 +3,7 @@ import { GameObject } from "../abstracts/gameobjects.js";
 export class Bird extends GameObject {
     constructor() {
         super();
+        this.drawBirdTimer = 0;
         this.sx = 260;
         this.sy = 0;
         this.sw = 90;
@@ -14,7 +15,16 @@ export class Bird extends GameObject {
     }
     draw() {
         ctx.beginPath();
-        ctx.drawImage(sprite, this.sx, this.sy, this.sw, this.sh, this.x, this.y, this.w, this.h);
+        if (this.drawBirdTimer <= 10) {
+            ctx.drawImage(sprite, this.sx, this.sy, this.sw, this.sh, this.x, this.y, this.w, this.h);
+        }
+        else if (this.drawBirdTimer <= 20) {
+            ctx.drawImage(sprite, this.sx + 88, this.sy, this.sw, this.sh, this.x, this.y, this.w, this.h);
+        }
+        else {
+            this.drawBirdTimer = 0;
+        }
+        this.drawBirdTimer++;
         ctx.closePath();
     }
     update() {

@@ -18,7 +18,7 @@ export class Castus extends GameObject {
         this.sy = 0;
         this.sw = 53;
         this.sh = 100;
-        this.x = 800;
+        this.x = 1500;
         this.y = canvas.height - this.sh - 6;
         this.w = 52;
         this.h = 100;
@@ -31,6 +31,7 @@ export class Castus extends GameObject {
     }
 
     update(){
-        return
+        this.draw();
+        this.x -= 5;
     }
 }

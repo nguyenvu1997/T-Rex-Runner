@@ -21,6 +21,8 @@ let spawnTimer = initialSpawnTimer;
 let sprite = new Image();
 sprite.src = './img/200-offline-sprite.png';
 
+console.log(sprite)
+
 function RandomIntInRange(min, max) {
     return Math.round(Math.random() * (max - min) + min);
 }

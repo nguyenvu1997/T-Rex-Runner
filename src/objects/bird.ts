@@ -11,6 +11,7 @@ export class Bird extends GameObject {
     w: number;
     h: number;
     dy: number;
+    drawBirdTimer = 0;
 
     constructor() {
         super();
@@ -26,7 +27,14 @@ export class Bird extends GameObject {
 
     draw() {
         ctx.beginPath();
-        ctx.drawImage(sprite, this.sx, this.sy, this.sw, this.sh, this.x, this.y, this.w, this.h);
+        if (this.drawBirdTimer <= 10) {
+            ctx.drawImage(sprite, this.sx, this.sy, this.sw, this.sh, this.x, this.y, this.w, this.h);
+        } else if (this.drawBirdTimer <= 20) {
+            ctx.drawImage(sprite, this.sx + 88, this.sy, this.sw, this.sh, this.x, this.y, this.w, this.h);
+        } else {
+            this.drawBirdTimer = 0;
+        }
+        this.drawBirdTimer++;
         ctx.closePath();
     }
 

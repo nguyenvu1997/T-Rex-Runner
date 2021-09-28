@@ -19,6 +19,6 @@ export class Castus extends GameObject {
     }
     update() {
         this.draw();
-        this.x -= 5
+        this.x -= 5;
     }
 }
