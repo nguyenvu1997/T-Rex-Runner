@@ -31,7 +31,7 @@ function SpawnCloud() {
 }
 
 function SpawnObstacle() {
-    let type = RandomIntInRange(0, 1);
+    let type = RandomIntInRange(0, 2);
 
     castus = new Castus();
     bird = new Bird();
@@ -60,7 +60,9 @@ function update() {
     spawnTimer--;
     if (spawnTimer <= 0) {
         SpawnCloud();
+        SpawnObstacle();
         console.log(clouds);
+        console.log(obstacles);
         spawnTimer = initialSpawnTimer - 12;
 
         if (spawnTimer < 60) {
@@ -70,8 +72,19 @@ function update() {
 
     for (let i = 0; i < clouds.length; i++) {
         let c = clouds[i];
-
         c.update();
+    }
+
+    for (let i = 0; i < obstacles.length; i++) {
+        let o = obstacles[i];
+        if (player.x < o.x + o.w && player.x + player.w > o.x &&
+            player.y < o.y + o.h && player.y + player.h > o.y) 
+        {
+            obstacles = [];
+            score = 0;
+            spawnTimer = initialSpawnTimer;
+        }
+        o.update();
     }
 
     requestAnimationFrame(update);
@@ -80,12 +93,14 @@ function update() {
 function start() {
     gravity = 1
     score = 0;
-    player = new Player();
 
+    player = new Player();
     scoreText = new Score("Score: " + score, 25, 25, "left", "black", "20");
+
     requestAnimationFrame(update);
 }
 
 start()
+
 
 export { canvas, ctx, sprite, gravity, keys, cloud, clouds }

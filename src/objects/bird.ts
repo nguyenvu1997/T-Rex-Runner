@@ -18,7 +18,7 @@ export class Bird extends GameObject {
         this.sy = 0;
         this.sw = 90;
         this.sh = 100;
-        this.x = 500;
+        this.x = 1500;
         this.y = canvas.height - this.sh;
         this.w = 90;
         this.h = 100;
@@ -31,6 +31,7 @@ export class Bird extends GameObject {
     }
 
     update(){
-        return
+        this.draw();
+        this.x -= 5
     }
 }
